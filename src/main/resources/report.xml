@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+        http://www.springframework.org/schema/util
+        http://www.springframework.org/schema/util/spring-util-4.0.xsd
+">
+
+    <bean id="reportFactory" class="com.qualicom.cm.report.ReportFactory">
+        <property name="reportBeanList">
+            <util:list value-type="java.lang.String">
+                <value>customerReportDao</value>
+            </util:list>
+        </property>
+    </bean>
+
+    <bean id="reportMarshaller" class="com.qualicom.cm.report.ReportMarshaller">
+        <property name="collectiveReportName" value="paymentReports"/>
+        <property name="marshallAdapterList">
+            <util:list value-type="com.qualicom.cm.marshall.MarshallAdapter">
+                <ref bean="csvMarshallAdapter"/>
+            </util:list>
+        </property>
+    </bean>
+
+    <bean id="customerReportDao" class="com.qualicom.cm.dao.impl.ReportDaoImpl" scope="prototype">
+        <!-- Where data is coming from -->
+        <property name="dataSource" ref="rwrdprDataSource"/>
+        <!-- File name of report -->
+        <property name="name" value="customerReport"/>
+        <!-- Title of report -->
+        <property name="title" value="Customer Report"/>
+        <!-- SQL query to create the report -->
+        <property name="query" value="select sa.CUST_ID as customer_id, sad.CONTACT_FIRST_NM as customer_first_name, sad.CONTACT_LAST_NM as customer_last_name, sa.SRVC_AGRMT_START_TS as commitment_start_dt, sa.SRVC_AGRMT_END_TS as commitment_end_dt, (case when sa.SRVC_AGRMT_STATUS_ID = 1 then 'SUBMITTED' when sa.SRVC_AGRMT_STATUS_ID = 2 then 'CONFIRMED' when sa.SRVC_AGRMT_STATUS_ID = 3 then 'PROCESSING' when sa.SRVC_AGRMT_STATUS_ID = 4 then 'SHIPPED' when sa.SRVC_AGRMT_STATUS_ID = 5 then 'CANCELED' when sa.SRVC_AGRMT_STATUS_ID = 6 then 'TRANSFERRED OUT' when sa.SRVC_AGRMT_STATUS_ID = 7 then 'EARLY TERMINATION' when sa.SRVC_AGRMT_STATUS_ID = 8 then 'TRANSFERRED IN' when sa.SRVC_AGRMT_STATUS_ID = 10 then 'TRANSFER IN PROGRESS' when sa.SRVC_AGRMT_STATUS_ID = 11 then 'ACTION REQUIRED' else 'UNKNOWN' end) as commitment_status_id, sad.CONTACT_ADDR_APT_UNIT_NO as shipping_apt_num, sad.CONTACT_ADDR_STREET_NO as shipping_street_num, sad.CONTACT_ADDR_STREET_NM as shipping_street_name, sad.CONTACT_ADDR_STREET_DIR as shipping_street_dir, sad.CONTACT_ADDRESS_CITY_NM as shipping_city_name, sad.CONTACT_ADDR_PROV_CD as shipping_province_name, sad.CONTACT_ADDR_POSTAL_CD as shipping_postal_code, sad.CONTACT_ADDR_COUNTRY_CD as shipping_country_name, sad.CONTACT_ADDR_TXT as shipping_display_addr from WLNRWRDADM.srvc_agrmt sa join WLNRWRDADM.srvc_agrmt_detail sad on sa.SRVC_AGRMT_ID = sad.SRVC_AGRMT_ID where sa.CUST_ID in (:customerIdList)"/>
+        <!-- Report columns as returned by the query - these are used to match the columns returned by the SQL! -->
+        <property name="reportColumns">
+            <bean class="com.qualicom.cm.model.ReportColumns">
+                <constructor-arg name="list">
+                    <util:list value-type="java.lang.String">
+                        <value>customer_id</value>
+                        <value>customer_first_name</value>
+                        <value>customer_last_name</value>
+                        <value>commitment_start_dt</value>
+                        <value>commitment_end_dt</value>
+                        <value>commitment_status_id</value>
+                        <value>shipping_apt_num</value>
+                        <value>shipping_street_num</value>
+                        <value>shipping_street_name</value>
+                        <value>shipping_street_dir</value>
+                        <value>shipping_city_name</value>
+                        <value>shipping_province_name</value>
+                        <value>shipping_postal_code</value>
+                        <value>shipping_country_name</value>
+                        <value>shipping_display_addr</value>
+                    </util:list>
+                </constructor-arg>
+            </bean>
+        </property>
+        <!-- Report columns used for display - these are used to render the report for user. Columns are in the same order as above. -->
+        <property name="displayColumns">
+            <bean class="com.qualicom.cm.model.ReportColumns">
+                <constructor-arg name="list">
+                    <util:list value-type="java.lang.String">
+                        <value>customer_id</value>
+                        <value>customer_first_name</value>
+                        <value>customer_last_name</value>
+                        <value>commitment_start_dt</value>
+                        <value>commitment_end_dt</value>
+                        <value>commitment_status_id</value>
+                        <value>shipping_apt_num</value>
+                        <value>shipping_street_num</value>
+                        <value>shipping_street_name</value>
+                        <value>shipping_street_dir</value>
+                        <value>shipping_city_name</value>
+                        <value>shipping_province_name</value>
+                        <value>shipping_postal_code</value>
+                        <value>shipping_country_name</value>
+                        <value>shipping_display_addr</value>
+                    </util:list>
+                </constructor-arg>
+            </bean>
+        </property>
+    </bean>
+
+</beans>
