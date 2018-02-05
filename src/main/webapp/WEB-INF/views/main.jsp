@@ -17,7 +17,7 @@
 
     <p><form method="POST" action="${pageContext.request.contextPath}/customermigrator" enctype="multipart/form-data">
         Upload a CSV file with Customer IDs where the Customer ID is the first column: <input type="file" name="csvFile">
-        <input type="submit" value="Migrate Customers"/>
+        <input type="submit" value="Generate Report"/>
     </form></p>
 </body>
 </html>

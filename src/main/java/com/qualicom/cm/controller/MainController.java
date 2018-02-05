@@ -43,7 +43,7 @@ public class MainController {
     @RequestMapping("")
     public ModelAndView beginHere() {
         ModelAndView model = new ModelAndView();
-        model.addObject("title","Qualicom Customer Migrator");
+        model.addObject("title","GWP Customer Report");
         model.addObject("message","This page allows you to force a report run. Please note the generated reports will be e-mailed every time you click on the link below.");
         model.setViewName("main");
         return model;
@@ -60,11 +60,11 @@ public class MainController {
         List<MarshalledReports> reports = runReports(getCustomerIds(csvFile));
         ModelAndView model = new ModelAndView();
         if (reports == null) {
-            model.addObject("title", "Qualicom Customer Migrator");
+            model.addObject("title", "GWP Customer Report");
             model.addObject("message", "Report was not generated.");
             model.setViewName("main");
         } else if (reports.size() > 1) {
-            model.addObject("title", "Qualicom Customer Migrator");
+            model.addObject("title", "GWP Customer Report");
             model.addObject("message", "More than one report was not generated.");
             model.setViewName("main");
         } else {
